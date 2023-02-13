@@ -8,7 +8,7 @@ import { useMovies } from './hooks/useMovies'
 
 function App() {
 	const { search, updateSearch, error } = useSearch()
-	const { movies, getMovies } = useMovies({ search })
+	const { movies, getMovies, loading } = useMovies({ search })
 
 	function useSearch() {
 		const [search, updateSearch] = useState('')
@@ -72,9 +72,7 @@ function App() {
 				{error && <p style={{ color: 'red' }}>{error}</p>}
 			</header>
 
-			<main>
-				<Movies movies={movies} />
-			</main>
+			<main>{loading ? <p>Cargando...</p> : <Movies movies={movies} />}</main>
 		</div>
 	)
 }
