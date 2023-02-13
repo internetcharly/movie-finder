@@ -7,8 +7,9 @@ import { useMovies } from './hooks/useMovies'
 // https://www.omdbapi.com/?apikey=b0d9b793&s=Avengers
 
 function App() {
+	const [sort, setSort] = useState(false)
 	const { search, updateSearch, error } = useSearch()
-	const { movies, getMovies, loading } = useMovies({ search })
+	const { movies, getMovies, loading } = useMovies({ search, sort })
 
 	function useSearch() {
 		const [search, updateSearch] = useState('')
@@ -44,12 +45,16 @@ function App() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault()
-		getMovies()
+		getMovies({ search })
 		// const { query } = Object.fromEntries(new window.FormData(event.target))
 	}
 
 	const handleChange = (event) => {
 		updateSearch(event.target.value)
+	}
+
+	const handleSort = () => {
+		setSort(!sort)
 	}
 
 	return (
@@ -67,6 +72,7 @@ function App() {
 						name='query'
 						placeholder='Search your movie...'
 					/>
+					<input type='checkbox' onChange={handleSort} checked={sort} />
 					<button type='submit'>Search</button>
 				</form>
 				{error && <p style={{ color: 'red' }}>{error}</p>}
