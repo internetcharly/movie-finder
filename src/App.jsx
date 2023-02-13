@@ -7,13 +7,13 @@ import { useMovies } from './hooks/useMovies'
 // https://www.omdbapi.com/?apikey=b0d9b793&s=Avengers
 
 function App() {
-	const { movies } = useMovies()
 	const { search, updateSearch, error } = useSearch()
-	const isFirstInput = useRef(true)
+	const { movies, getMovies } = useMovies({ search })
 
 	function useSearch() {
 		const [search, updateSearch] = useState('')
 		const [error, setError] = useState(null)
+		const isFirstInput = useRef(true)
 
 		useEffect(() => {
 			if (isFirstInput.current) {
@@ -44,6 +44,7 @@ function App() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault()
+		getMovies()
 		// const { query } = Object.fromEntries(new window.FormData(event.target))
 	}
 
@@ -63,7 +64,7 @@ function App() {
 						}}
 						onChange={handleChange}
 						value={search}
-						name='search'
+						name='query'
 						placeholder='Search your movie...'
 					/>
 					<button type='submit'>Search</button>
