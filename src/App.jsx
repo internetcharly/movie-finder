@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-return */
-import { useEffect, useRef, useState } from 'react'
+import debounce from 'just-debounce-it'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { Movies } from './components/Movies'
 import { useMovies } from './hooks/useMovies'
@@ -43,6 +44,13 @@ function App() {
 		return { search, updateSearch, error }
 	}
 
+	const debouncedGetMovies = useCallback(
+		debounce((search) => {
+			getMovies({ search })
+		}, 300),
+		[]
+	)
+
 	const handleSubmit = (event) => {
 		event.preventDefault()
 		getMovies({ search })
@@ -50,7 +58,9 @@ function App() {
 	}
 
 	const handleChange = (event) => {
-		updateSearch(event.target.value)
+		const newSearch = event.target.value
+		updateSearch(newSearch)
+		debouncedGetMovies(newSearch)
 	}
 
 	const handleSort = () => {
