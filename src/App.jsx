@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-return */
-import { useEffect, useRef, useState } from 'react'
+import debounce from 'just-debounce-it'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { Movies } from './components/Movies'
 import { useMovies } from './hooks/useMovies'
@@ -7,8 +8,9 @@ import { useMovies } from './hooks/useMovies'
 // https://www.omdbapi.com/?apikey=b0d9b793&s=Avengers
 
 function App() {
+	const [sort, setSort] = useState(false)
 	const { search, updateSearch, error } = useSearch()
-	const { movies, getMovies, loading } = useMovies({ search })
+	const { movies, getMovies, loading } = useMovies({ search, sort })
 
 	function useSearch() {
 		const [search, updateSearch] = useState('')
@@ -42,14 +44,27 @@ function App() {
 		return { search, updateSearch, error }
 	}
 
+	const debouncedGetMovies = useCallback(
+		debounce((search) => {
+			getMovies({ search })
+		}, 300),
+		[]
+	)
+
 	const handleSubmit = (event) => {
 		event.preventDefault()
-		getMovies()
+		getMovies({ search })
 		// const { query } = Object.fromEntries(new window.FormData(event.target))
 	}
 
 	const handleChange = (event) => {
-		updateSearch(event.target.value)
+		const newSearch = event.target.value
+		updateSearch(newSearch)
+		debouncedGetMovies(newSearch)
+	}
+
+	const handleSort = () => {
+		setSort(!sort)
 	}
 
 	return (
@@ -67,6 +82,7 @@ function App() {
 						name='query'
 						placeholder='Search your movie...'
 					/>
+					<input type='checkbox' onChange={handleSort} checked={sort} />
 					<button type='submit'>Search</button>
 				</form>
 				{error && <p style={{ color: 'red' }}>{error}</p>}
