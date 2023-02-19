@@ -14,7 +14,7 @@ function ListOfMovies({ movies }) {
 }
 
 function NoMoviesResult() {
-	return <p>No se han encontrado resultados</p>
+	return <p>No results have been found</p>
 }
 
 export function Movies({ movies }) {
