@@ -5,8 +5,6 @@ import './App.css'
 import { Movies } from './components/Movies'
 import { useMovies } from './hooks/useMovies'
 
-// https://www.omdbapi.com/?apikey=b0d9b793&s=Avengers
-
 function App() {
 	const [sort, setSort] = useState(false)
 	const { search, updateSearch, error } = useSearch()
@@ -82,13 +80,19 @@ function App() {
 						name='query'
 						placeholder='Search your movie...'
 					/>
-					<input type='checkbox' onChange={handleSort} checked={sort} />
 					<button type='submit'>Search</button>
+					<label htmlFor='sortname'>Sort A-Z</label>
+					<input
+						name='sortname'
+						type='checkbox'
+						onChange={handleSort}
+						checked={sort}
+					/>
 				</form>
 				{error && <p style={{ color: 'red' }}>{error}</p>}
 			</header>
 
-			<main>{loading ? <p>Cargando...</p> : <Movies movies={movies} />}</main>
+			<main>{loading ? <p>Loading...</p> : <Movies movies={movies} />}</main>
 		</div>
 	)
 }
